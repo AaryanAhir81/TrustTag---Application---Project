@@ -1,82 +1,99 @@
-import 'package:flutter/material.dart';
+import 'package:trusttag_application/src/core/resources/resources.dart';
+import 'package:trusttag_application/src/core/resources/mock_data.dart';
+import 'package:trusttag_application/src/core/widgets/fade_in_slide.dart';
+import 'package:trusttag_application/src/core/widgets/animated_pressable.dart';
 import 'package:trusttag_application/src/features/product/presentation/register_product_screen.dart';
 import 'package:trusttag_application/src/features/product/presentation/product_passport_screen.dart';
 
 class DashboardScreen extends StatelessWidget {
-  final VoidCallback? onMyProductsTap;
+  final VoidCallback? onViewAllTap;
+  final VoidCallback? onAlertsTap;
+  final VoidCallback? onProfileTap;
 
-  const DashboardScreen({super.key, this.onMyProductsTap});
+  const DashboardScreen({
+    super.key, 
+    this.onViewAllTap,
+    this.onAlertsTap,
+    this.onProfileTap,
+  });
 
   @override
   Widget build(BuildContext context) {
     final bool isDark = Theme.of(context).brightness == Brightness.dark;
-    final surfaceColor = isDark ? const Color(0xFF1E1E1E) : Colors.white;
+    final surfaceColor = isDark ? AppColors.darkSurface : Colors.white;
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.all(AppLayout.screenPadding),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Welcome Banner
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.all(24),
-            decoration: BoxDecoration(
-              gradient: const LinearGradient(
-                colors: [Color(0xFF2962FF), Color(0xFF0039CB)],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-              borderRadius: BorderRadius.circular(24),
-              boxShadow: [
-                BoxShadow(
-                  color: const Color(0xFF2962FF).withValues(alpha: 0.3),
-                  blurRadius: 15,
-                  offset: const Offset(0, 8),
-                ),
-              ],
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: const [
-                Text(
-                  'Hello, Aaryan 👋',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
+          FadeInSlide(
+            delay: 0.1,
+            child: RepaintBoundary(
+              child: Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(24),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: AppColors.primaryGradient,
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
                   ),
+                  borderRadius: BorderRadius.circular(AppLayout.cardRadius + 4),
+                  boxShadow: [
+                    BoxShadow(
+                      color: const Color(0xFF2962FF).withValues(alpha: 0.3),
+                      blurRadius: 15,
+                      offset: const Offset(0, 8),
+                    ),
+                  ],
                 ),
-                SizedBox(height: 8),
-                Text(
-                  'Manage and verify your digital\nproduct passports with ease.',
-                  style: TextStyle(color: Colors.white70, fontSize: 15, height: 1.4),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: const [
+                    Text(
+                      'Hello, Aaryan 👋',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    SizedBox(height: 8),
+                    Text(
+                      'Manage and verify your digital\nproduct passports with ease.',
+                      style: TextStyle(color: Colors.white70, fontSize: 15, height: 1.4),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
           ),
           const SizedBox(height: 24),
-          // Search Bar
-          Container(
-            decoration: BoxDecoration(
-              color: surfaceColor,
-              borderRadius: BorderRadius.circular(16),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.05),
-                  blurRadius: 10,
-                  offset: const Offset(0, 4),
+          FadeInSlide(
+            delay: 0.2,
+            child: Container(
+              decoration: BoxDecoration(
+                color: surfaceColor,
+                borderRadius: BorderRadius.circular(AppLayout.cardRadius - 4),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.05),
+                    blurRadius: 10,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+              ),
+              child: TextField(
+                style: TextStyle(color: isDark ? Colors.white : Colors.black),
+                decoration: const InputDecoration(
+                  hintText: 'Search your products...',
+                  hintStyle: TextStyle(color: Colors.grey, fontSize: 14),
+                  prefixIcon: Icon(Icons.search, color: Colors.blueAccent),
+                  border: InputBorder.none,
+                  contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
                 ),
-              ],
-            ),
-            child: TextField(
-              style: TextStyle(color: isDark ? Colors.white : Colors.black),
-              decoration: const InputDecoration(
-                hintText: 'Search your products...',
-                hintStyle: TextStyle(color: Colors.grey, fontSize: 14),
-                prefixIcon: Icon(Icons.search, color: Colors.blueAccent),
-                border: InputBorder.none,
-                contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
               ),
             ),
           ),
@@ -86,38 +103,40 @@ class DashboardScreen extends StatelessWidget {
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: isDark ? Colors.white : const Color(0xFF1A237E)),
           ),
           const SizedBox(height: 16),
-          // Quick Actions Grid
-          Row(
-            children: [
-              Expanded(
-                child: _buildActionCard(
-                  context: context,
-                  icon: Icons.add_circle_outline,
-                  title: 'Add Product',
-                  subtitle: 'Register New',
-                  color: const Color(0xFFE3F2FD),
-                  iconColor: Colors.blue,
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const RegisterProductScreen()),
-                    );
-                  },
+          FadeInSlide(
+            delay: 0.3,
+            child: Row(
+              children: [
+                Expanded(
+                  child: _buildActionCard(
+                    context: context,
+                    icon: Icons.add_circle_outline,
+                    title: 'Add Product',
+                    subtitle: 'Register New',
+                    color: const Color(0xFFE3F2FD),
+                    iconColor: Colors.blue,
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const RegisterProductScreen()),
+                      );
+                    },
+                  ),
                 ),
-              ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: _buildActionCard(
-                  context: context,
-                  icon: Icons.inventory_2_outlined,
-                  title: 'My Products',
-                  subtitle: 'View All',
-                  color: const Color(0xFFF3E5F5),
-                  iconColor: Colors.purple,
-                  onTap: onMyProductsTap,
+                const SizedBox(width: 16),
+                Expanded(
+                  child: _buildActionCard(
+                    context: context,
+                    icon: Icons.inventory_2_outlined,
+                    title: 'My Products',
+                    subtitle: 'View All',
+                    color: const Color(0xFFF3E5F5),
+                    iconColor: Colors.purple,
+                    onTap: onViewAllTap,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
           const SizedBox(height: 28),
           Text(
@@ -144,16 +163,17 @@ class DashboardScreen extends StatelessWidget {
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: isDark ? Colors.white : const Color(0xFF1A237E)),
               ),
               TextButton(
-                onPressed: onMyProductsTap,
+                onPressed: onViewAllTap,
                 child: const Text('See All', style: TextStyle(color: Colors.blue, fontWeight: FontWeight.w600)),
               ),
             ],
           ),
           const SizedBox(height: 8),
-          // Recent Activities List
-          _buildActivityItem(context, 'Iphone 15 Pro', 'Apple . M301', 'Verified', 'assets/images/iphone15.png'),
-          const SizedBox(height: 12),
-          _buildActivityItem(context, 'Dell Latitude 7490', 'Dell . M302', 'Verified', 'assets/images/laptop.png'),
+          // Recent Activities List (from MockData)
+          ...MockData.products.take(2).map((product) => Padding(
+            padding: const EdgeInsets.only(bottom: 12.0),
+            child: _buildActivityItem(context, product),
+          )),
           const SizedBox(height: 24),
         ],
       ),
@@ -170,13 +190,13 @@ class DashboardScreen extends StatelessWidget {
     VoidCallback? onTap,
   }) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    return GestureDetector(
+    return AnimatedPressable(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
-          borderRadius: BorderRadius.circular(20),
+          color: isDark ? AppColors.darkSurface : Colors.white,
+          borderRadius: BorderRadius.circular(AppLayout.cardRadius),
           border: Border.all(color: Colors.black.withValues(alpha: 0.05)),
           boxShadow: [
             BoxShadow(
@@ -188,6 +208,7 @@ class DashboardScreen extends StatelessWidget {
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
           children: [
             Container(
               padding: const EdgeInsets.all(10),
@@ -195,12 +216,22 @@ class DashboardScreen extends StatelessWidget {
                 color: isDark ? color.withValues(alpha: 0.1) : color,
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: Icon(icon, color: iconColor, size: 26),
+              child: Icon(icon, color: iconColor, size: 24),
             ),
-            const SizedBox(height: 16),
-            Text(title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+            const SizedBox(height: 12),
+            Text(
+              title,
+              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
             const SizedBox(height: 4),
-            Text(subtitle, style: const TextStyle(color: Colors.grey, fontSize: 12)),
+            Text(
+              subtitle,
+              style: const TextStyle(color: Colors.grey, fontSize: 11),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
           ],
         ),
       ),
@@ -211,10 +242,10 @@ class DashboardScreen extends StatelessWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return Expanded(
       child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 18),
+        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 4),
         decoration: BoxDecoration(
           color: isDark ? bgColor.withValues(alpha: 0.1) : bgColor,
-          borderRadius: BorderRadius.circular(18),
+          borderRadius: BorderRadius.circular(AppLayout.cardRadius - 4),
           boxShadow: [
             BoxShadow(
               color: textColor.withValues(alpha: 0.1),
@@ -227,12 +258,16 @@ class DashboardScreen extends StatelessWidget {
           children: [
             Text(
               count,
-              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: isDark ? Colors.white : textColor),
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: isDark ? Colors.white : textColor),
+              maxLines: 1,
             ),
             const SizedBox(height: 4),
             Text(
               label,
-              style: TextStyle(fontSize: 11, color: isDark ? Colors.white70 : Colors.black54, fontWeight: FontWeight.w600),
+              style: TextStyle(fontSize: 10, color: isDark ? Colors.white70 : Colors.black54, fontWeight: FontWeight.w600),
+              textAlign: TextAlign.center,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
             ),
           ],
         ),
@@ -240,17 +275,17 @@ class DashboardScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildActivityItem(BuildContext context, String name, String model, String status, String assetPath) {
+  Widget _buildActivityItem(BuildContext context, Product product) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    return GestureDetector(
+    return AnimatedPressable(
       onTap: () {
         Navigator.push(
           context,
           MaterialPageRoute(
             builder: (context) => ProductPassportScreen(
-              productName: name,
-              model: model,
-              assetPath: assetPath,
+              productName: product.name,
+              model: product.model,
+              assetPath: product.assetPath,
             ),
           ),
         );
@@ -258,26 +293,29 @@ class DashboardScreen extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(14),
         decoration: BoxDecoration(
-          color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
-          borderRadius: BorderRadius.circular(18),
+          color: isDark ? AppColors.darkSurface : Colors.white,
+          borderRadius: BorderRadius.circular(AppLayout.cardRadius - 2),
           border: Border.all(color: Colors.black.withValues(alpha: 0.05)),
         ),
         child: Row(
           children: [
-            Container(
-              width: 54,
-              height: 54,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(14),
-              ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(14),
-                child: Image.asset(
-                  assetPath,
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) => Container(
-                    color: Colors.grey.shade100,
-                    child: const Icon(Icons.image, color: Colors.grey),
+            Hero(
+              tag: 'product-${product.name}',
+              child: Container(
+                width: 54,
+                height: 54,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(14),
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(14),
+                  child: Image.asset(
+                    product.assetPath,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) => Container(
+                      color: Colors.grey.shade100,
+                      child: const Icon(Icons.image, color: Colors.grey),
+                    ),
                   ),
                 ),
               ),
@@ -287,21 +325,21 @@ class DashboardScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(name, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+                  Text(product.name, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
                   const SizedBox(height: 4),
-                  Text(model, style: const TextStyle(color: Colors.grey, fontSize: 12)),
+                  Text(product.model, style: const TextStyle(color: Colors.grey, fontSize: 12)),
                 ],
               ),
             ),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
               decoration: BoxDecoration(
-                color: Colors.green.withValues(alpha: 0.1),
+                color: product.statusColor.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Text(
-                status,
-                style: const TextStyle(color: Colors.green, fontSize: 11, fontWeight: FontWeight.bold),
+                product.status,
+                style: TextStyle(color: product.statusColor, fontSize: 11, fontWeight: FontWeight.bold),
               ),
             ),
           ],

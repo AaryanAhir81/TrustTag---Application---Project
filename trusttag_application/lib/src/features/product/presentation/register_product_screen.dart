@@ -1,5 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:trusttag_application/src/core/constants/app_colors.dart';
+import 'package:trusttag_application/src/core/resources/resources.dart';
 
 class RegisterProductScreen extends StatefulWidget {
   const RegisterProductScreen({super.key});
@@ -116,9 +115,14 @@ class _RegisterProductScreenState extends State<RegisterProductScreen> {
                 'Step $_currentStep of 3',
                 style: const TextStyle(color: Colors.grey, fontWeight: FontWeight.w500),
               ),
-              Text(
-                stepTitle,
-                style: const TextStyle(color: AppColors.secondaryBlue, fontWeight: FontWeight.bold),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  stepTitle,
+                  textAlign: TextAlign.right,
+                  style: const TextStyle(color: AppColors.secondaryBlue, fontWeight: FontWeight.bold),
+                  overflow: TextOverflow.ellipsis,
+                ),
               ),
             ],
           ),

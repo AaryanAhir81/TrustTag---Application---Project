@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:trusttag_application/src/core/resources/resources.dart';
 import 'package:trusttag_application/src/features/services/presentation/help_article_screen.dart';
 
 class HelpSupportScreen extends StatelessWidget {

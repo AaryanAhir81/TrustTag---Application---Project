@@ -1,5 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:trusttag_application/src/core/constants/app_colors.dart';
+import 'package:trusttag_application/src/core/resources/resources.dart';
 import 'package:trusttag_application/src/features/auth/presentation/login_screen.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -17,8 +16,23 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   void _navigateToNext() async {
+    debugPrint("Splash: Initializing...");
+    try {
+      if (mounted) {
+        // Precache the logo for smoother first appearance
+        precacheImage(const AssetImage(AppAssets.logo), context).catchError((_) {
+          debugPrint("Splash: Logo precache failed, but continuing...");
+        });
+      }
+    } catch (e) {
+      debugPrint("Splash: Precache error: $e");
+    }
+
+    // Wait for branding visibility
     await Future.delayed(const Duration(seconds: 3));
+    
     if (mounted) {
+      debugPrint("Splash: Navigating to Login...");
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => const LoginScreen()),
@@ -40,7 +54,7 @@ class _SplashScreenState extends State<SplashScreen> {
               Column(
                 children: [
                   Image.asset(
-                    'assets/images/logo.png',
+                    AppAssets.logo,
                     width: 140,
                     height: 140,
                     errorBuilder: (context, error, stackTrace) {

@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:trusttag_application/src/core/resources/resources.dart';
 
 class ProductPassportScreen extends StatefulWidget {
   final String productName;
@@ -84,21 +84,24 @@ class _ProductPassportScreenState extends State<ProductPassportScreen> {
           const SizedBox(height: 24),
           Row(
             children: [
-              Container(
-                width: 80,
-                height: 80,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(20),
-                  child: Image.asset(
-                    widget.assetPath,
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) => Container(
-                      color: Colors.grey.shade100,
-                      child: const Icon(Icons.image, color: Colors.grey),
+              Hero(
+                tag: 'product-${widget.productName}',
+                child: Container(
+                  width: 80,
+                  height: 80,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(20),
+                    child: Image.asset(
+                      widget.assetPath,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) => Container(
+                        color: Colors.grey.shade100,
+                        child: const Icon(Icons.image, color: Colors.grey),
+                      ),
                     ),
                   ),
                 ),
@@ -146,14 +149,16 @@ class _ProductPassportScreenState extends State<ProductPassportScreen> {
   }
 
   Widget _buildStatusCards() {
-    return Row(
-      children: [
-        _buildStatusItem('Excellent', 'Condition', Colors.green),
-        const SizedBox(width: 8),
-        _buildStatusItem('1 Owner', 'Owners', Colors.blue),
-        const SizedBox(width: 8),
-        _buildStatusItem('Active', 'Warranty', Colors.green),
-      ],
+    return RepaintBoundary(
+      child: Row(
+        children: [
+          _buildStatusItem('Excellent', 'Condition', Colors.green),
+          const SizedBox(width: 8),
+          _buildStatusItem('1 Owner', 'Owners', Colors.blue),
+          const SizedBox(width: 8),
+          _buildStatusItem('Active', 'Warranty', Colors.green),
+        ],
+      ),
     );
   }
 
@@ -161,22 +166,30 @@ class _ProductPassportScreenState extends State<ProductPassportScreen> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return Expanded(
       child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 16),
+        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 4),
         decoration: BoxDecoration(
-          color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
+          color: isDark ? AppColors.darkSurface : Colors.white,
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: Colors.black.withValues(alpha: 0.05)),
+          border: Border.all(color: isDark ? Colors.white.withValues(alpha: 0.05) : Colors.black.withValues(alpha: 0.05)),
         ),
         child: Column(
           children: [
             Text(
               value,
-              style: TextStyle(color: color, fontWeight: FontWeight.bold, fontSize: 15),
+              style: TextStyle(
+                color: isDark ? (color == Colors.green ? Colors.greenAccent : Colors.blue.shade200) : color, 
+                fontWeight: FontWeight.bold, 
+                fontSize: 13
+              ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
             ),
             const SizedBox(height: 4),
             Text(
               label,
-              style: const TextStyle(color: Colors.grey, fontSize: 12),
+              style: const TextStyle(color: Colors.grey, fontSize: 10),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
             ),
           ],
         ),
@@ -350,7 +363,14 @@ class _ProductPassportScreenState extends State<ProductPassportScreen> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(label, style: const TextStyle(color: Colors.grey, fontSize: 14)),
-        Text(value, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: isDark ? Colors.white : Colors.black)),
+        const SizedBox(width: 8),
+        Flexible(
+          child: Text(
+            value,
+            textAlign: TextAlign.right,
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: isDark ? Colors.white : Colors.black),
+          ),
+        ),
       ],
     );
   }
@@ -435,7 +455,7 @@ class _ProductPassportScreenState extends State<ProductPassportScreen> {
   Widget _buildDocTile(String title, String subtitle) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
         borderRadius: BorderRadius.circular(20),
@@ -449,23 +469,38 @@ class _ProductPassportScreenState extends State<ProductPassportScreen> {
               color: Colors.blue.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(12),
             ),
-            child: const Icon(Icons.description_outlined, color: Colors.blue),
+            child: const Icon(Icons.description_outlined, color: Colors.blue, size: 20),
           ),
-          const SizedBox(width: 16),
+          const SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(title, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: isDark ? Colors.white : Colors.black)),
-                Text(subtitle, style: const TextStyle(color: Colors.grey, fontSize: 12)),
+                Text(
+                  title,
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: isDark ? Colors.white : Colors.black),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                Text(
+                  subtitle,
+                  style: const TextStyle(color: Colors.grey, fontSize: 11),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
               ],
             ),
           ),
           IconButton(
+            padding: EdgeInsets.zero,
+            constraints: const BoxConstraints(),
             icon: const Icon(Icons.visibility_outlined, color: Colors.blue, size: 20),
             onPressed: () {},
           ),
+          const SizedBox(width: 8),
           IconButton(
+            padding: EdgeInsets.zero,
+            constraints: const BoxConstraints(),
             icon: const Icon(Icons.download_outlined, color: Colors.blue, size: 20),
             onPressed: () {},
           ),

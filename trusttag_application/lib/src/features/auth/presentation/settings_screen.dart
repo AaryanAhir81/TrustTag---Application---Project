@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
-import 'package:trusttag_application/src/core/theme/app_theme.dart';
+import 'package:trusttag_application/src/core/resources/resources.dart';
 import 'package:trusttag_application/src/features/auth/presentation/change_password_screen.dart';
+import 'package:trusttag_application/src/features/auth/presentation/licenses_screen.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -62,14 +62,22 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   AppTheme.themeNotifier.value = v ? ThemeMode.dark : ThemeMode.light;
                 });
               }),
-              _buildSettingItem(Icons.language_outlined, 'Language', trailingText: 'English'),
             ]),
 
             const SizedBox(height: 24),
             _buildSectionHeader('ABOUT'),
             _buildSettingCard([
               _buildSettingItem(Icons.info_outline, 'App Version', trailingText: 'v1.0.0'),
-              _buildSettingItem(Icons.description_outlined, 'Licenses'),
+              _buildSettingItem(
+                Icons.description_outlined, 
+                'Licenses',
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const LicensesScreen()),
+                  );
+                },
+              ),
             ]),
             const SizedBox(height: 40),
           ],

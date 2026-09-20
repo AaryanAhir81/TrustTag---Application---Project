@@ -1,7 +1,9 @@
-import 'package:flutter/material.dart';
+import 'package:trusttag_application/src/core/resources/resources.dart';
 
 class AlertsScreen extends StatelessWidget {
-  const AlertsScreen({super.key});
+  final bool isTab;
+
+  const AlertsScreen({super.key, this.isTab = false});
 
   @override
   Widget build(BuildContext context) {
@@ -12,16 +14,18 @@ class AlertsScreen extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        leading: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: CircleAvatar(
-            backgroundColor: Colors.blue.withValues(alpha: 0.1),
-            child: IconButton(
-              icon: Icon(Icons.arrow_back, color: isDark ? Colors.white : Colors.black, size: 20),
-              onPressed: () => Navigator.pop(context),
+        leading: isTab 
+          ? null 
+          : Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: CircleAvatar(
+                backgroundColor: Colors.blue.withValues(alpha: 0.1),
+                child: IconButton(
+                  icon: Icon(Icons.arrow_back, color: isDark ? Colors.white : Colors.black, size: 20),
+                  onPressed: () => Navigator.pop(context),
+                ),
+              ),
             ),
-          ),
-        ),
         title: Text(
           'Notifications',
           style: TextStyle(color: isDark ? Colors.white : Colors.black, fontWeight: FontWeight.bold),
@@ -112,8 +116,8 @@ class AlertsScreen extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
-        borderRadius: BorderRadius.circular(20),
+        color: isDark ? AppColors.darkSurface : Colors.white,
+        borderRadius: BorderRadius.circular(AppLayout.cardRadius),
         border: Border.all(color: isUnread ? Colors.blue.withValues(alpha: 0.1) : Colors.black.withValues(alpha: 0.05)),
         boxShadow: isUnread ? [
           BoxShadow(color: Colors.blue.withValues(alpha: 0.05), blurRadius: 10, offset: const Offset(0, 4))
@@ -135,12 +139,16 @@ class AlertsScreen extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      title,
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                        color: isDark ? Colors.white : Colors.black,
+                    Flexible(
+                      child: Text(
+                        title,
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                          color: isDark ? Colors.white : Colors.black,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
                     if (isUnread)

@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
-import 'package:trusttag_application/src/core/common_widgets/custom_text_field.dart';
+import 'package:trusttag_application/src/core/resources/resources.dart';
+import 'package:trusttag_application/src/core/widgets/custom_text_field.dart';
 
 class EditProfileScreen extends StatefulWidget {
   const EditProfileScreen({super.key});

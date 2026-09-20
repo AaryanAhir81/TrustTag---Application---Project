@@ -1,27 +1,8 @@
-import 'package:flutter/material.dart';
+import 'package:trusttag_application/src/core/resources/resources.dart';
+import 'package:trusttag_application/src/core/resources/mock_data.dart';
 import 'package:trusttag_application/src/features/product/presentation/register_product_screen.dart';
 import 'package:trusttag_application/src/features/ownership/presentation/ownership_transfer_screen.dart';
 import 'package:trusttag_application/src/features/product/presentation/product_passport_screen.dart';
-
-class Product {
-  final String name;
-  final String model;
-  final String status;
-  final Color statusColor;
-  final String condition;
-  final String owner;
-  final String assetPath;
-
-  Product({
-    required this.name,
-    required this.model,
-    required this.status,
-    required this.statusColor,
-    required this.condition,
-    required this.owner,
-    required this.assetPath,
-  });
-}
 
 class ProductsScreen extends StatefulWidget {
   const ProductsScreen({super.key});
@@ -31,43 +12,13 @@ class ProductsScreen extends StatefulWidget {
 }
 
 class _ProductsScreenState extends State<ProductsScreen> {
-  final List<Product> _allProducts = [
-    Product(
-      name: 'Iphone 15 Pro',
-      model: 'Apple . M301',
-      status: 'Verified',
-      statusColor: Colors.green,
-      condition: 'Excellent',
-      owner: 'Owner #1',
-      assetPath: 'assets/images/iphone15.png',
-    ),
-    Product(
-      name: 'Dell Latitude 7490',
-      model: 'Dell . M302',
-      status: 'Verified',
-      statusColor: Colors.green,
-      condition: 'Excellent',
-      owner: 'Owner #1',
-      assetPath: 'assets/images/laptop.png',
-    ),
-    Product(
-      name: 'Samsung Galaxy S24',
-      model: 'Samsung . S24',
-      status: 'Pending',
-      statusColor: Colors.amber,
-      condition: 'Excellent',
-      owner: 'Owner #1',
-      assetPath: 'assets/images/iphone15.png',
-    ),
-  ];
-
-  List<Product> _filteredProducts = [];
+  late List<Product> _filteredProducts;
   final TextEditingController _searchController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    _filteredProducts = _allProducts;
+    _filteredProducts = MockData.products;
     _searchController.addListener(_onSearchChanged);
   }
 
@@ -80,7 +31,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
 
   void _onSearchChanged() {
     setState(() {
-      _filteredProducts = _allProducts
+      _filteredProducts = MockData.products
           .where((product) =>
               product.name.toLowerCase().contains(_searchController.text.toLowerCase()) ||
               product.model.toLowerCase().contains(_searchController.text.toLowerCase()))
@@ -91,7 +42,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
   @override
   Widget build(BuildContext context) {
     final bool isDark = Theme.of(context).brightness == Brightness.dark;
-    final surfaceColor = isDark ? const Color(0xFF1E1E1E) : Colors.white;
+    final surfaceColor = isDark ? AppColors.darkSurface : Colors.white;
 
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -148,6 +99,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
                 : ListView.builder(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     itemCount: _filteredProducts.length,
+                    cacheExtent: 100, // Pre-render some items for smoother scrolling
                     itemBuilder: (context, index) {
                       final product = _filteredProducts[index];
                       return Padding(
@@ -169,7 +121,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
             MaterialPageRoute(builder: (context) => const RegisterProductScreen()),
           );
         },
-        backgroundColor: const Color(0xFF525CFF),
+        backgroundColor: AppColors.accentBlue,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         child: const Icon(Icons.add, color: Colors.white, size: 30),
       ),
@@ -184,8 +136,8 @@ class _ProductsScreenState extends State<ProductsScreen> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
-        borderRadius: BorderRadius.circular(20),
+        color: isDark ? AppColors.darkSurface : Colors.white,
+        borderRadius: BorderRadius.circular(AppLayout.cardRadius),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.05),
@@ -199,20 +151,23 @@ class _ProductsScreenState extends State<ProductsScreen> {
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
-                width: 80,
-                height: 80,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(15),
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(15),
-                  child: Image.asset(
-                    product.assetPath,
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) => Container(
-                      color: isDark ? Colors.white10 : Colors.grey.shade100,
-                      child: const Icon(Icons.image, color: Colors.grey),
+              Hero(
+                tag: 'product-${product.name}',
+                child: Container(
+                  width: 80,
+                  height: 80,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(15),
+                    child: Image.asset(
+                      product.assetPath,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) => Container(
+                        color: isDark ? Colors.white10 : Colors.grey.shade100,
+                        child: const Icon(Icons.image, color: Colors.grey),
+                      ),
                     ),
                   ),
                 ),
@@ -225,12 +180,16 @@ class _ProductsScreenState extends State<ProductsScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
-                          product.name,
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18,
-                            color: isDark ? Colors.white : Colors.black,
+                        Flexible(
+                          child: Text(
+                            product.name,
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18,
+                              color: isDark ? Colors.white : Colors.black,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                           ),
                         ),
                         Container(
@@ -264,7 +223,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                           decoration: BoxDecoration(
-                            color: Colors.blue.withValues(alpha: 0.1),
+                            color: isDark ? Colors.blue.withValues(alpha: 0.2) : Colors.blue.withValues(alpha: 0.1),
                             borderRadius: BorderRadius.circular(10),
                           ),
                           child: Text(
@@ -277,9 +236,13 @@ class _ProductsScreenState extends State<ProductsScreen> {
                           ),
                         ),
                         const SizedBox(width: 12),
-                        Text(
-                          product.owner,
-                          style: const TextStyle(color: Colors.grey, fontSize: 12),
+                        Flexible(
+                          child: Text(
+                            product.owner,
+                            style: const TextStyle(color: Colors.grey, fontSize: 11),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
                         ),
                       ],
                     ),
@@ -306,7 +269,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
                     );
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF525CFF),
+                    backgroundColor: AppColors.accentBlue,
                     foregroundColor: Colors.white,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                     padding: const EdgeInsets.symmetric(vertical: 12),

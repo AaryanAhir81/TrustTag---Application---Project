@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:trusttag_application/src/core/resources/resources.dart';
 
 class OwnershipTransferScreen extends StatefulWidget {
   const OwnershipTransferScreen({super.key});
@@ -89,7 +89,7 @@ class _OwnershipTransferScreenState extends State<OwnershipTransferScreen> {
                 leading: ClipRRect(
                   borderRadius: BorderRadius.circular(20),
                   child: Image.asset(
-                    'assets/images/profile.png',
+                    AppAssets.logo, // Changed from profile.png to logo.png for consistency in assets
                     width: 40,
                     height: 40,
                     fit: BoxFit.cover,

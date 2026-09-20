@@ -1,6 +1,5 @@
-import 'package:flutter/material.dart';
-import 'package:trusttag_application/src/core/constants/app_colors.dart';
-import 'package:trusttag_application/src/core/common_widgets/custom_text_field.dart';
+import 'package:trusttag_application/src/core/resources/resources.dart';
+import 'package:trusttag_application/src/core/widgets/custom_text_field.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
   const ForgotPasswordScreen({super.key});
@@ -71,23 +70,25 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
               ),
               const SizedBox(width: 12),
               Image.asset(
-                'assets/images/logo.png',
-                width: 50,
-                height: 50,
+                AppAssets.logo,
+                width: 40,
+                height: 40,
                 errorBuilder: (context, error, stackTrace) => const Icon(
                   Icons.verified_user_outlined,
                   color: AppColors.primaryBlue,
-                  size: 50,
+                  size: 40,
                 ),
               ),
               const SizedBox(width: 8),
-              RichText(
-                text: TextSpan(
-                  style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-                  children: [
-                    TextSpan(text: 'Trust ', style: TextStyle(color: isDark ? Colors.white : Colors.black)),
-                    const TextSpan(text: 'Tag', style: TextStyle(color: AppColors.buttonBlue)),
-                  ],
+              Flexible(
+                child: RichText(
+                  text: TextSpan(
+                    style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    children: [
+                      TextSpan(text: 'Trust ', style: TextStyle(color: isDark ? Colors.white : Colors.black)),
+                      const TextSpan(text: 'Tag', style: TextStyle(color: AppColors.buttonBlue)),
+                    ],
+                  ),
                 ),
               ),
             ],

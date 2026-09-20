@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:trusttag_application/src/core/resources/resources.dart';
 import 'package:trusttag_application/src/features/product/presentation/dashboard_screen.dart';
 import 'package:trusttag_application/src/features/product/presentation/products_screen.dart';
 import 'package:trusttag_application/src/features/services/presentation/alerts_screen.dart';
@@ -14,19 +14,23 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int _currentIndex = 0;
 
+  void _changeTab(int index) {
+    setState(() {
+      _currentIndex = index;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final List<Widget> screens = [
       DashboardScreen(
-        onMyProductsTap: () {
-          setState(() {
-            _currentIndex = 1; // Switch to My Products tab
-          });
-        },
+        onViewAllTap: () => _changeTab(1),
+        onAlertsTap: () => _changeTab(2),
+        onProfileTap: () => _changeTab(3),
       ),
       const ProductsScreen(),
-      const AlertsScreen(),
-      const ProfileScreen(),
+      const AlertsScreen(isTab: true),
+      ProfileScreen(onTabChange: _changeTab),
     ];
 
     final bool isDark = Theme.of(context).brightness == Brightness.dark;
@@ -35,7 +39,7 @@ class _HomeScreenState extends State<HomeScreen> {
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: _currentIndex == 0 
         ? AppBar(
-            backgroundColor: isDark ? const Color(0xFF1E1E1E) : Colors.white,
+            backgroundColor: isDark ? AppColors.darkSurface : Colors.white,
             elevation: 0,
             title: const Text(
               'TrustTag',
@@ -44,19 +48,11 @@ class _HomeScreenState extends State<HomeScreen> {
             actions: [
               IconButton(
                 icon: const Icon(Icons.notifications_none, color: Colors.amber),
-                onPressed: () {
-                  setState(() {
-                    _currentIndex = 2; // Go to Alerts tab
-                  });
-                },
+                onPressed: () => _changeTab(2),
               ),
               IconButton(
                 icon: Icon(Icons.account_circle_outlined, color: isDark ? Colors.white : Colors.black),
-                onPressed: () {
-                  setState(() {
-                    _currentIndex = 3; // Go to Profile tab
-                  });
-                },
+                onPressed: () => _changeTab(3),
               ),
               const SizedBox(width: 8),
             ],
@@ -77,15 +73,11 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         child: BottomNavigationBar(
           type: BottomNavigationBarType.fixed,
-          backgroundColor: isDark ? const Color(0xFF1E1E1E) : Colors.white,
-          selectedItemColor: const Color(0xFF525CFF),
+          backgroundColor: isDark ? AppColors.darkSurface : Colors.white,
+          selectedItemColor: AppColors.accentBlue,
           unselectedItemColor: Colors.grey,
           currentIndex: _currentIndex,
-          onTap: (index) {
-            setState(() {
-              _currentIndex = index;
-            });
-          },
+          onTap: _changeTab,
           items: const [
             BottomNavigationBarItem(icon: Icon(Icons.home_outlined), label: 'Home'),
             BottomNavigationBarItem(icon: Icon(Icons.inventory_2_outlined), label: 'Products'),
